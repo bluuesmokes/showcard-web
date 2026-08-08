@@ -1,0 +1,9 @@
+{
+  "appId": "com.bluuesmokes.covergen",
+  "appName": "CoverGen",
+  "webDir": "dist",
+  "server": {
+    "url": "https://showcard.vercel.app/",
+    "cleartext": true
+  }
+}

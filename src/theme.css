@@ -1,0 +1,141 @@
+/* Design System & Theme Engine */
+
+:root {
+  /* Dynamic Rich Purple Theme Palette Tokens */
+  --md-sys-color-primary: #c084fc;
+  --md-sys-color-on-primary: #2e1065;
+  --md-sys-color-primary-container: #6b21a8;
+  --md-sys-color-on-primary-container: #fae8ff;
+  
+  --md-sys-color-secondary: #d8b4fe;
+  --md-sys-color-on-secondary: #1e1b4b;
+  --md-sys-color-secondary-container: #581c87;
+  --md-sys-color-on-secondary-container: #f3e8ff;
+
+  --md-sys-color-tertiary: #f472b6;
+  --md-sys-color-on-tertiary: #831843;
+  --md-sys-color-tertiary-container: #9d174d;
+  --md-sys-color-on-tertiary-container: #fce7f3;
+
+  --md-sys-color-surface: #0f0919;
+  --md-sys-color-surface-dim: #0b0614;
+  --md-sys-color-surface-bright: #261442;
+  --md-sys-color-surface-container-lowest: #07030c;
+  --md-sys-color-surface-container-low: #130924;
+  --md-sys-color-surface-container: #1a0d31;
+  --md-sys-color-surface-container-high: #231240;
+  --md-sys-color-surface-container-highest: #2f1854;
+
+  --md-sys-color-on-surface: #f3e8ff;
+  --md-sys-color-on-surface-variant: #d8b4fe;
+  --md-sys-color-outline: #a855f7;
+  --md-sys-color-outline-variant: #4c1d95;
+
+  --md-sys-color-error: #f2b8b5;
+  --md-sys-color-on-error: #601410;
+  --md-sys-color-error-container: #8c1d18;
+  --md-sys-color-on-error-container: #f9dedc;
+
+  /* Shape Tokens */
+  --md-shape-corner-extra-small: 4px;
+  --md-shape-corner-small: 8px;
+  --md-shape-corner-medium: 12px;
+  --md-shape-corner-large: 16px;
+  --md-shape-corner-extra-large: 28px;
+  --md-shape-corner-full: 9999px;
+
+  /* Elevation Overlays */
+  --md-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.25), 0px 1px 2px 0px rgba(0, 0, 0, 0.40);
+  --md-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.25), 0px 1px 2px 0px rgba(0, 0, 0, 0.40);
+  --md-elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.25), 0px 1px 3px 0px rgba(0, 0, 0, 0.40);
+  --md-elevation-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.25), 0px 2px 3px 0px rgba(0, 0, 0, 0.40);
+  --md-elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.40);
+
+  /* Dynamic Accent Glow */
+  --md-dynamic-accent-glow: rgba(168, 85, 247, 0.35);
+}
+
+/* Custom Expressive Range Slider */
+input[type="range"].m3-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: var(--md-shape-corner-full);
+  background: var(--md-sys-color-surface-container-highest);
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+input[type="range"].m3-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 10px;
+  border-radius: var(--md-shape-corner-full);
+  background: var(--md-sys-color-surface-container-highest);
+}
+
+input[type="range"].m3-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  margin-top: -5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+input[type="range"].m3-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: var(--md-sys-color-on-primary-container);
+}
+
+input[type="range"].m3-slider::-webkit-slider-thumb:active {
+  transform: scale(1.35);
+}
+
+/* State Layers & Surface Roles */
+.m3-surface-container-lowest { background-color: var(--md-sys-color-surface-container-lowest); }
+.m3-surface-container-low { background-color: var(--md-sys-color-surface-container-low); }
+.m3-surface-container { background-color: var(--md-sys-color-surface-container); }
+.m3-surface-container-high { background-color: var(--md-sys-color-surface-container-high); }
+.m3-surface-container-highest { background-color: var(--md-sys-color-surface-container-highest); }
+
+.m3-card-elevated {
+  background-color: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--md-elevation-1);
+  border-radius: var(--md-shape-corner-extra-large);
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s;
+}
+
+.m3-card-elevated:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md-elevation-3);
+  background-color: var(--md-sys-color-surface-container);
+}
+
+/* Glassmorphism Surface */
+.m3-glass-surface {
+  background-color: rgba(20, 18, 24, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Custom Scrollbar for Panel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-outline);
+}
