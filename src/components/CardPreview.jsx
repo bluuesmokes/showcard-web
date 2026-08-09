@@ -29,7 +29,7 @@ export default React.forwardRef(function CardPreview({
   const selectedFontFamily = config.customFont || fontObj?.value || '"Inter", sans-serif';
 
   return (
-    <div className="h-full w-full flex items-center justify-center relative p-2 sm:p-4 select-none">
+    <div className="select-none">
       <div
         ref={ref}
         style={{

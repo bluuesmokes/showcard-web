@@ -46,6 +46,43 @@ const FontLoader = () => {
   return null;
 };
 
+function ScaledCardPreview({ cardRef, config, posterData, safeImageUrl, isImageLoading }) {
+  const containerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const measure = () => {
+      const cardW = config.canvasW || 380;
+      const cardH = config.canvasH || 675;
+      const availW = container.clientWidth - 32;
+      const availH = container.clientHeight - 32;
+      setScale(Math.min(availW / cardW, availH / cardH, 1));
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [config.canvasW, config.canvasH]);
+
+  return (
+    <div ref={containerRef} className="w-full h-full flex items-center justify-center pointer-events-none">
+      <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center', transition: 'transform 0.2s ease' }}>
+        <CardPreview
+          ref={cardRef}
+          config={config}
+          posterData={posterData}
+          safeImageUrl={safeImageUrl}
+          isImageLoading={isImageLoading}
+        />
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [activeMode, setActiveMode] = useState('movie');
   const [query, setQuery] = useState('');
@@ -251,13 +288,28 @@ function App() {
     if (!cardRef.current) return;
     setIsDownloading(true);
 
+    const cardW = config.canvasW || 380;
+    const cardH = config.canvasH || 675;
+    const TARGET_HEIGHT = 2160;
+    const pixelRatio = TARGET_HEIGHT / cardH;
+
     try {
       let dataUrl;
       try {
-        dataUrl = await domToPng(cardRef.current, { scale: 3, quality: 1.0 });
+        dataUrl = await domToPng(cardRef.current, {
+          width: cardW,
+          height: cardH,
+          scale: pixelRatio,
+          quality: 1.0,
+        });
       } catch (err) {
-        // Removed console.warn for cleaner production
-        const canvas = await html2canvas(cardRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+        const canvas = await html2canvas(cardRef.current, {
+          width: cardW,
+          height: cardH,
+          scale: pixelRatio,
+          useCORS: true,
+          backgroundColor: null,
+        });
         dataUrl = canvas.toDataURL('image/png');
       }
 
@@ -438,16 +490,14 @@ function App() {
         <div className="flex-1 h-[calc(100dvh-4rem)] w-full overflow-hidden flex flex-col md:flex-row z-10 relative">
 
           {/* Card Preview Screen */}
-          <div className="h-[40vh] md:h-full flex-1 bg-[var(--md-sys-color-surface-container-lowest)] relative overflow-hidden flex items-center justify-center p-2 sm:p-4 shrink-0 border-b md:border-b-0 border-white/10 shadow-xl z-20">
-            <div className="transform scale-[0.40] xs:scale-[0.45] sm:scale-[0.60] md:scale-85 lg:scale-95 transition-transform origin-center pointer-events-none">
-              <CardPreview
-                ref={cardRef}
-                config={config}
-                posterData={posterData}
-                safeImageUrl={safeImageUrl}
-                isImageLoading={isImageLoading}
-              />
-            </div>
+          <div className="h-[38vh] md:h-full md:flex-1 min-w-0 bg-[var(--md-sys-color-surface-container-lowest)] relative overflow-hidden flex items-center justify-center border-b md:border-b-0 border-white/10 shadow-xl z-20">
+            <ScaledCardPreview
+              cardRef={cardRef}
+              config={config}
+              posterData={posterData}
+              safeImageUrl={safeImageUrl}
+              isImageLoading={isImageLoading}
+            />
           </div>
 
           {/* Editor Options Panel */}
