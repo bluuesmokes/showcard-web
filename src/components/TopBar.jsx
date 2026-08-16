@@ -1,22 +1,17 @@
 import React from 'react';
 import { ChevronLeft, Image as ImageLucide, Smartphone, Send } from 'lucide-react';
 import AppLogo from './AppLogo';
+import ThemePicker from './ThemePicker';
 
 export default function TopBar({
   editorActive,
   activeMode,
-  hasChanges,
   onExit,
-  onReplace
+  onReplace,
+  theme,
+  onThemeChange,
+  onResetTheme
 }) {
-  const getModeTitle = () => {
-    switch (activeMode) {
-      case 'music': return 'Music Sharer';
-      case 'game': return 'Game Sharer';
-      default: return 'Movie & TV Sharer';
-    }
-  };
-
   const getCategorySubtitle = () => {
     switch (activeMode) {
       case 'music': return 'Share your favorite tracks & albums';
@@ -38,19 +33,29 @@ export default function TopBar({
             <span className="text-xs font-bold tracking-wide pr-1">Back</span>
           </button>
 
-          <button
-            onClick={onReplace}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] hover:opacity-90 active:scale-95 transition-all text-xs font-bold tracking-wide cursor-pointer shadow-sm"
-          >
-            <ImageLucide size={16} />
-            <span>Replace</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {theme && (
+              <ThemePicker
+                theme={theme}
+                onThemeChange={onThemeChange}
+                onResetTheme={onResetTheme}
+              />
+            )}
+
+            <button
+              onClick={onReplace}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--md-sys-color-primary-container)] text-[var(--md-sys-color-on-primary-container)] hover:opacity-90 active:scale-95 transition-all text-xs font-bold tracking-wide cursor-pointer shadow-sm"
+            >
+              <ImageLucide size={16} />
+              <span>Replace</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="w-full flex items-center justify-between">
           {/* Left side: Logo and branding */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[var(--md-sys-color-primary-container)] flex items-center justify-center p-2 overflow-hidden shadow-lg shadow-[var(--md-dynamic-accent-glow)] shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center p-2 overflow-hidden shadow-md shadow-purple-500/10 shrink-0">
               <AppLogo className="w-full h-full" />
             </div>
             <div>
@@ -65,6 +70,14 @@ export default function TopBar({
 
           {/* Right side: Action buttons */}
           <div className="flex items-center gap-2">
+            {theme && (
+              <ThemePicker
+                theme={theme}
+                onThemeChange={onThemeChange}
+                onResetTheme={onResetTheme}
+              />
+            )}
+
             <a
               href="https://t.me/showcarrd"
               target="_blank"

@@ -4,7 +4,7 @@ ShowCard is a web application for creating beautiful, shareable media cards for 
 
 ## Features
 
-- **Multi-Media Search**: Search for movies and TV shows (TMDB), music (iTunes/Apple Music/Spotify), and games (RAWG).
+- **Multi-Media Search**: Search for movies and TV shows (TMDB), music (iTunes/Apple Music/Spotify), and games (IGDB).
 - **Custom Entry**: Create cards from scratch with your own titles, descriptions, genres, and artwork.
 - **Dynamic Color Extraction**: Automatically pulls color palettes from poster artwork for adaptive theming.
 - **Background Effects**: Blurred image backgrounds with adjustable blur/opacity/zoom, solid colors, or two-tone gradients.
@@ -27,7 +27,7 @@ ShowCard is a web application for creating beautiful, shareable media cards for 
 2. Install dependencies: `npm install`
 3. Copy `.env.example` to `.env` and fill in your API keys:
    - [TMDB API Key](https://www.themoviedb.org/documentation/api)
-   - [RAWG API Key](https://rawg.io/apidocs)
+   - [IGDB / Twitch Developer Console](https://api-docs.igdb.com)
    - [Spotify API](https://developer.spotify.com/dashboard)
 4. Run the dev server: `npm run dev`
 5. Build for production: `npm run build`

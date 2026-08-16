@@ -76,7 +76,7 @@ export default function EditorPanel({
 
       {/* Tab Bar */}
       <div className="shrink-0 flex border-b border-white/5 bg-[var(--md-sys-color-surface-container-low)]">
-        {TABS.map(({ id, label, Icon }) => {
+        {TABS.map(({ id, label }) => {
           const active = activeTab === id;
           return (
             <button

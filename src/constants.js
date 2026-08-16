@@ -1,5 +1,6 @@
 export const TMDB_KEY = import.meta.env.VITE_TMDB_KEY || "29af5f2ba5c0de94314786fd4aa268cf";
-export const RAWG_KEY = import.meta.env.VITE_RAWG_KEY || "ea7054ad2f3f4ce58bc6302629a87d47";
+export const IGDB_CLIENT_ID = import.meta.env.VITE_IGDB_CLIENT_ID || "";
+export const IGDB_CLIENT_SECRET = import.meta.env.VITE_IGDB_CLIENT_SECRET || "";
 
 export const GENRE_MAP = { 28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy", 80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family", 14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music", 9648: "Mystery", 10749: "Romance", 878: "Sci-Fi", 10770: "TV Movie", 53: "Thriller", 10752: "War", 37: "Western" };
 

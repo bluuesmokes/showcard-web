@@ -75,7 +75,7 @@ export function extractAndApplyColors(imageUrl) {
       const avgG = Math.round(gSum / count);
       const avgB = Math.round(bSum / count);
 
-      const [h, s, l] = rgbToHsl(avgR, avgG, avgB);
+      const [h, s] = rgbToHsl(avgR, avgG, avgB);
 
       // Generate dynamic dark palette tokens
       const primaryHex = hslToHex(h, Math.min(s, 75), 75); // Bright dynamic accent
@@ -96,8 +96,8 @@ export function extractAndApplyColors(imageUrl) {
       root.style.setProperty('--md-sys-color-secondary-container', secondaryContainerHex);
 
       root.style.setProperty('--md-dynamic-accent-glow', `rgba(${avgR}, ${avgG}, ${avgB}, 0.25)`);
-    } catch (e) {
-// Removed console.log for cleaner production
+    } catch {
+      // Ignore color extraction errors
     }
   };
 

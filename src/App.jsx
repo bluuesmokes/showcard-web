@@ -7,9 +7,11 @@ import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 
-import { TMDB_KEY, RAWG_KEY, GENRE_MAP, DEFAULT_CONFIG } from './constants';
+import { TMDB_KEY, IGDB_CLIENT_ID, IGDB_CLIENT_SECRET, GENRE_MAP, DEFAULT_CONFIG } from './constants';
 import { extractAndApplyColors } from './utils/colorExtractor';
+import { getSavedTheme, saveTheme, applyAppTheme, DEFAULT_THEME } from './utils/themeEngine';
 import { searchMusic } from './utils/musicApi';
+import { searchIgdbGames } from './utils/igdbApi';
 
 import TopBar from './components/TopBar';
 import Navigation from './components/Navigation';
@@ -96,6 +98,8 @@ function App() {
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
+  const [appTheme, setAppTheme] = useState(() => getSavedTheme());
+
   const [posterData, setPosterData] = useState({
     title: '',
     subtitle: '',
@@ -106,8 +110,7 @@ function App() {
   });
 
   const [safeImageUrl, setSafeImageUrl] = useState(null);
-  const [blobUrls, setBlobUrls] = useState({});
-  const [isImageLoading, setIsImageLoading] = useState(false);
+  const isImageLoading = false;
 
   const [config, setConfig] = useState({ ...DEFAULT_CONFIG });
 
@@ -115,18 +118,44 @@ function App() {
   const hasChanges = JSON.stringify(config) !== JSON.stringify(DEFAULT_CONFIG);
   const editorActive = (selectedItem || editingManual) && !isReplacing;
 
+  // Apply site theme on initial load or when appTheme updates (when not in card editor)
+  useEffect(() => {
+    if (!editorActive || !posterData.image) {
+      applyAppTheme(appTheme);
+    }
+  }, [appTheme, editorActive, posterData.image]);
+
+  // Restore site theme whenever leaving the editor studio
+  useEffect(() => {
+    if (!editorActive) {
+      applyAppTheme(appTheme);
+    }
+  }, [editorActive, appTheme]);
+
+  const handleThemeChange = (newTheme) => {
+    setAppTheme(newTheme);
+    saveTheme(newTheme);
+    if (!editorActive || !posterData.image) {
+      applyAppTheme(newTheme);
+    }
+  };
+
+  const handleResetTheme = () => {
+    setAppTheme(DEFAULT_THEME);
+    saveTheme(DEFAULT_THEME);
+    if (!editorActive || !posterData.image) {
+      applyAppTheme(DEFAULT_THEME);
+    }
+  };
+
   // Process poster image blobs & trigger color extraction
   useEffect(() => {
     if (!posterData.image) {
       setSafeImageUrl(null);
-      Object.values(blobUrls).forEach(url => {
-        if (url && url.startsWith('blob:')) {
-          URL.revokeObjectURL(url);
-        }
-      });
-      setBlobUrls({});
       return;
     }
+
+    let currentBlob = null;
 
     const processImage = async () => {
       if (posterData.image.startsWith('data:')) {
@@ -138,6 +167,7 @@ function App() {
           posterData.image.includes('tmdb.org') ||
           posterData.image.includes('allorigins.win') ||
           posterData.image.includes('corsproxy.io') ||
+          posterData.image.includes('igdb.com') ||
           posterData.image.includes('rawg.io') ||
           posterData.image.includes('itunes.apple.com') ||
           posterData.image.includes('mzstatic.com')
@@ -148,13 +178,19 @@ function App() {
         }
 
         const blobUrl = await convertToBlobUrl(proxiedUrl);
-        setBlobUrls({ main: blobUrl });
+        currentBlob = blobUrl;
         setSafeImageUrl(blobUrl || proxiedUrl);
         extractAndApplyColors(blobUrl || proxiedUrl);
       }
     };
 
     processImage();
+
+    return () => {
+      if (currentBlob && currentBlob.startsWith('blob:')) {
+        URL.revokeObjectURL(currentBlob);
+      }
+    };
   }, [posterData.image]);
 
   const convertToBlobUrl = async (url) => {
@@ -162,13 +198,13 @@ function App() {
       const response = await fetch(url);
       const blob = await response.blob();
       return URL.createObjectURL(blob);
-    } catch (e) {
+    } catch {
       try {
         const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
         const response = await fetch(proxyUrl);
         const blob = await response.blob();
         return URL.createObjectURL(blob);
-      } catch (err) {
+      } catch {
         return url;
       }
     }
@@ -195,21 +231,11 @@ function App() {
         const musicResults = await searchMusic(query);
         setResults(musicResults);
       } else if (activeMode === 'game') {
-        const res = await fetch(`https://api.rawg.io/api/games?key=${RAWG_KEY}&search=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        const gameResults = (data.results || []).map(g => ({
-          id: `game_${g.id}`,
-          title: g.name,
-          subtitle: (g.released || '').split('-')[0],
-          typeLabel: 'Game',
-          genres: (g.genres || []).map(gn => gn.name).join(', '),
-          overview: `Rating: ${g.rating} / 5 • Platforms: ${(g.platforms || []).map(p => p.platform.name).slice(0, 3).join(', ')}`,
-          image: g.background_image
-        }));
+        const gameResults = await searchIgdbGames(query);
         setResults(gameResults);
       }
-    } catch (e) {
-      // Removed console.error for cleaner production
+    } catch {
+      // Ignore search error
     } finally {
       setIsSearching(false);
     }
@@ -281,6 +307,15 @@ function App() {
     setIsReplacing(false);
     setShowExitWarning(false);
     setConfig({ ...DEFAULT_CONFIG });
+    setPosterData({
+      title: '',
+      subtitle: '',
+      typeLabel: 'Movie',
+      genres: '',
+      image: null,
+      overview: ''
+    });
+    applyAppTheme(appTheme);
   };
 
   // Download / Share Card handler
@@ -302,7 +337,7 @@ function App() {
           scale: pixelRatio,
           quality: 1.0,
         });
-      } catch (err) {
+      } catch {
         const canvas = await html2canvas(cardRef.current, {
           width: cardW,
           height: cardH,
@@ -334,8 +369,8 @@ function App() {
         link.href = dataUrl;
         link.click();
       }
-    } catch (e) {
-// Removed console.error for cleaner production
+    } catch {
+      // Ignore download errors
     } finally {
       setIsDownloading(false);
     }
@@ -360,10 +395,18 @@ function App() {
         hasChanges={hasChanges}
         onExit={() => (hasChanges ? setShowExitWarning(true) : exitToHome())}
         onReplace={() => setIsReplacing(true)}
+        theme={appTheme}
+        onThemeChange={handleThemeChange}
+        onResetTheme={handleResetTheme}
       />
 
-      {/* Ambient Purple Background Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent pointer-events-none z-0" />
+      {/* Ambient Theme Background Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 transition-opacity duration-500"
+        style={{
+          background: 'radial-gradient(ellipse at top, var(--md-dynamic-accent-glow) 0%, transparent 70%)'
+        }}
+      />
 
       {/* Main Viewport */}
       {!editorActive ? (

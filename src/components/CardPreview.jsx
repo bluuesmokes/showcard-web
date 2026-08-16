@@ -9,21 +9,24 @@ export default React.forwardRef(function CardPreview({
   safeImageUrl,
   isImageLoading
 }, ref) {
-  const [blurredBgUrl, setBlurredBgUrl] = useState(safeImageUrl);
+  const [blurredCanvasUri, setBlurredCanvasUri] = useState(null);
 
   useEffect(() => {
-    if (config.showBgImage && config.bgType === 'blur' && safeImageUrl) {
-      let isMounted = true;
-      createBlurredImageUri(safeImageUrl, config.bgBlur).then((uri) => {
-        if (isMounted) {
-          setBlurredBgUrl(uri || safeImageUrl);
-        }
-      });
-      return () => { isMounted = false; };
-    } else {
-      setBlurredBgUrl(safeImageUrl);
+    if (!config.showBgImage || config.bgType !== 'blur' || !safeImageUrl) {
+      return;
     }
+    let isMounted = true;
+    createBlurredImageUri(safeImageUrl, config.bgBlur).then((uri) => {
+      if (isMounted) {
+        setBlurredCanvasUri(uri);
+      }
+    });
+    return () => { isMounted = false; };
   }, [safeImageUrl, config.bgBlur, config.bgType, config.showBgImage]);
+
+  const blurredBgUrl = (config.showBgImage && config.bgType === 'blur' && blurredCanvasUri)
+    ? blurredCanvasUri
+    : safeImageUrl;
 
   const fontObj = FONT_FAMILIES.find(f => f.name === config.fontFamily) || FONT_FAMILIES[0];
   const selectedFontFamily = config.customFont || fontObj?.value || '"Inter", sans-serif';

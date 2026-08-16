@@ -1,35 +1,35 @@
 /* Design System & Theme Engine */
 
 :root {
-  /* Dynamic Rich Purple Theme Palette Tokens */
-  --md-sys-color-primary: #c084fc;
-  --md-sys-color-on-primary: #2e1065;
-  --md-sys-color-primary-container: #6b21a8;
-  --md-sys-color-on-primary-container: #fae8ff;
-  
-  --md-sys-color-secondary: #d8b4fe;
-  --md-sys-color-on-secondary: #1e1b4b;
-  --md-sys-color-secondary-container: #581c87;
-  --md-sys-color-on-secondary-container: #f3e8ff;
+  /* Default Black & White Theme Palette Tokens */
+  --md-sys-color-primary: #ffffff;
+  --md-sys-color-on-primary: #09090b;
+  --md-sys-color-primary-container: #27272a;
+  --md-sys-color-on-primary-container: #f4f4f5;
 
-  --md-sys-color-tertiary: #f472b6;
-  --md-sys-color-on-tertiary: #831843;
-  --md-sys-color-tertiary-container: #9d174d;
-  --md-sys-color-on-tertiary-container: #fce7f3;
+  --md-sys-color-secondary: #e4e4e7;
+  --md-sys-color-on-secondary: #09090b;
+  --md-sys-color-secondary-container: #3f3f46;
+  --md-sys-color-on-secondary-container: #f4f4f5;
 
-  --md-sys-color-surface: #0f0919;
-  --md-sys-color-surface-dim: #0b0614;
-  --md-sys-color-surface-bright: #261442;
-  --md-sys-color-surface-container-lowest: #07030c;
-  --md-sys-color-surface-container-low: #130924;
-  --md-sys-color-surface-container: #1a0d31;
-  --md-sys-color-surface-container-high: #231240;
-  --md-sys-color-surface-container-highest: #2f1854;
+  --md-sys-color-tertiary: #d4d4d8;
+  --md-sys-color-on-tertiary: #09090b;
+  --md-sys-color-tertiary-container: #3f3f46;
+  --md-sys-color-on-tertiary-container: #f4f4f5;
 
-  --md-sys-color-on-surface: #f3e8ff;
-  --md-sys-color-on-surface-variant: #d8b4fe;
-  --md-sys-color-outline: #a855f7;
-  --md-sys-color-outline-variant: #4c1d95;
+  --md-sys-color-surface: #09090b;
+  --md-sys-color-surface-dim: #040405;
+  --md-sys-color-surface-bright: #18181b;
+  --md-sys-color-surface-container-lowest: #09090b;
+  --md-sys-color-surface-container-low: #121215;
+  --md-sys-color-surface-container: #18181b;
+  --md-sys-color-surface-container-high: #27272a;
+  --md-sys-color-surface-container-highest: #3f3f46;
+
+  --md-sys-color-on-surface: #f4f4f5;
+  --md-sys-color-on-surface-variant: #a1a1aa;
+  --md-sys-color-outline: #71717a;
+  --md-sys-color-outline-variant: #3f3f46;
 
   --md-sys-color-error: #f2b8b5;
   --md-sys-color-on-error: #601410;
@@ -52,7 +52,44 @@
   --md-elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.40);
 
   /* Dynamic Accent Glow */
-  --md-dynamic-accent-glow: rgba(168, 85, 247, 0.35);
+  --md-dynamic-accent-glow: rgba(255, 255, 255, 0.15);
+}
+
+/* Fuwari Expressive Theme Hue Slider */
+input[type="range"].fuwari-hue-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  border-radius: var(--md-shape-corner-full);
+  background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"].fuwari-hue-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 14px;
+  border-radius: var(--md-shape-corner-full);
+  background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+}
+
+input[type="range"].fuwari-hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  margin-top: -3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type="range"].fuwari-hue-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
 }
 
 /* Custom Expressive Range Slider */
